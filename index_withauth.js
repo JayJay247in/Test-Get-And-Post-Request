@@ -2,6 +2,7 @@ const express = require('express');
 const routes = require('./routes/users.js');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
+const { users } = require('./utils');
 
 const app = express();
 const PORT = 5000;
@@ -55,5 +56,16 @@ app.post("/login", (req, res) => {
     return res.status(200).send("User successfully logged in");
 });
 
+// Endpoint for Getting all users with specific Last name
+app.get("/users/lastname/:lastName", (req,res) => {
+    const lastName = req.params.lastName;
+    const usersWithLastName = users.filter(user => user.lastName === lastName)
+    return res.status(200).json(usersWithLastName);
+})
+// Endpoint for Sorting Users by Date of birth
+app.get("/users/sortbydob", (req,res) => {
+    const sortedUsers = [...users].sort((a,b)=> new Date(a.dateOfBirth) - new Date(b.dateOfBirth))
+    return res.status(200).json(sortedUsers);
+})
 // Start server
 app.listen(PORT, () => console.log("Server is running at port " + PORT));
